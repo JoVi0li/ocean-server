@@ -17,7 +17,8 @@ Ocean is an intimate app that provides safe space to users connects with each ot
 
 ## Tech Stack
 
-...
+- Go
+- Docker
 
 ## Learnings
 
