@@ -38,7 +38,7 @@ func (r *RepositoryPostgres) FindById(ctx context.Context, id uuid.UUID) (User, 
 	var user = User{ID: id}
 	err := r.Connection.QueryRow(
 		ctx,
-		"SELECT username, email WHERE id = $1",
+		"SELECT username, email FROM users WHERE id = $1",
 		id,
 	).Scan(&user.Username, &user.Email)
 
