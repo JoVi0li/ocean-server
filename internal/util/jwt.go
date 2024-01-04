@@ -46,15 +46,18 @@ func NewToken(infos UserInfoToken) (string, error) {
 	return ss, nil
 }
 
-
 func ValidateToken(token string) error {
 	tk, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SIGNING_KEY")), nil
 	})
 
-	if err != nil {
+	if err != nil || !tk.Valid {
 		return err
 	} else if _, ok := tk.Claims.(*tokenClaims); ok {
+		if expTime, err := tk.Claims.GetExpirationTime(); err != nil || expTime.Time.Compare(time.Now()) == -1 {
+			return ErrorExpiredToken
+		}
+
 		return nil
 	} else {
 		return ErrorUnknownClaimsType
