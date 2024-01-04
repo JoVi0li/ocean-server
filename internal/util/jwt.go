@@ -45,3 +45,18 @@ func NewToken(infos UserInfoToken) (string, error) {
 
 	return ss, nil
 }
+
+
+func ValidateToken(token string) error {
+	tk, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWT_SIGNING_KEY")), nil
+	})
+
+	if err != nil {
+		return err
+	} else if _, ok := tk.Claims.(*tokenClaims); ok {
+		return nil
+	} else {
+		return ErrorUnknownClaimsType
+	}
+}
