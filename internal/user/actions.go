@@ -20,41 +20,6 @@ func Configure() {
 	}
 }
 
-func CreateUsers(ctx *gin.Context) {
-	var user User
-
-	if err := ctx.BindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"sucess": false,
-			"data":   nil,
-			"error":  err.Error(),
-		})
-
-		return
-	}
-
-	ctxTimeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-
-	sucess, err := service.Create(ctxTimeout, user)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"sucess": false,
-			"data":   nil,
-			"error":  err.Error(),
-		})
-
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, gin.H{
-		"sucess": true,
-		"data":   sucess,
-		"error":  nil,
-	})
-}
-
 func GetUsers(ctx *gin.Context) {
 	param := ctx.Param("id")
 
