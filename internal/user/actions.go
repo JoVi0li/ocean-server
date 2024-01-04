@@ -62,7 +62,7 @@ func GetUsers(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorIdInvalid,
+			"error":  ErrorIdInvalid.Error(),
 		})
 
 		return
@@ -74,7 +74,7 @@ func GetUsers(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorIdInvalid,
+			"error":  ErrorIdInvalid.Error(),
 		})
 
 		return
@@ -89,10 +89,10 @@ func GetUsers(ctx *gin.Context) {
 			statusCode = http.StatusNotFound
 		}
 
-		ctx.JSON(http.StatusNotFound, gin.H{
+		ctx.JSON(statusCode, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  statusCode,
+			"error":  ErrorIdInvalid.Error(),
 		})
 
 		return
@@ -112,7 +112,7 @@ func DeleteUsers(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorIdInvalid,
+			"error":  ErrorIdInvalid.Error(),
 		})
 
 		return
@@ -124,7 +124,7 @@ func DeleteUsers(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorIdInvalid,
+			"error":  ErrorIdInvalid.Error(),
 		})
 
 		return
