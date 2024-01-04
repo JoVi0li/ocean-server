@@ -42,6 +42,16 @@ func (s Service) FindById(ctx context.Context, id uuid.UUID) (User, error) {
 	return s.Repository.FindById(ctx, id)
 }
 
+func (s Service) FindByEmail(ctx context.Context, email string) (User, error) {
+	_, errInvalidEmail := mail.ParseAddress(email)
+	
+	if errInvalidEmail != nil {
+		return User{}, ErrorEmailInvalid
+	}
+	
+	return s.Repository.FindByEmail(ctx, email)
+}
+
 func (s Service) DeleteById(ctx context.Context, id uuid.UUID) error {
 	return s.Repository.DeleteById(ctx, id)
 }
