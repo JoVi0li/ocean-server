@@ -75,6 +75,10 @@ func GetToken(ctx *gin.Context) (string, error) {
 
 	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
 
+	if tokenString == "" {
+		return "", ErrorInvalidAuthorizationToken
+	}
+
 	return tokenString, nil
 }
 
