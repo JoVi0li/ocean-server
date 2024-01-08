@@ -2,8 +2,10 @@ package util
 
 import (
 	"os"
+	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -62,4 +64,34 @@ func ValidateToken(token string) error {
 	} else {
 		return ErrorUnknownClaimsType
 	}
+}
+
+func GetToken(ctx *gin.Context) (string, error) {
+	authHeader := ctx.GetHeader("Authorization")
+
+	if authHeader == "" {
+		return "", ErrorMissingAuthorizationToken
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+
+	return tokenString, nil
+}
+
+func DecodeTokenClaims(token string) (*tokenClaims, error) {
+	tk, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWT_SIGNING_KEY")), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	tkClaims, ok := tk.Claims.(*tokenClaims)
+
+	if !ok {
+		return nil, ErrorUnknownClaimsType
+	}
+
+	return tkClaims, nil
 }
