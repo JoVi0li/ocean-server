@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/JoVi0li/ocean-server/internal/database"
+	"github.com/JoVi0li/ocean-server/internal/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -21,9 +22,31 @@ func Configure() {
 }
 
 func GetUsers(ctx *gin.Context) {
-	param := ctx.Param("id")
+	token, err := util.GetToken(ctx)
 
-	if param == "" {
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"sucess": false,
+			"data":   nil,
+			"error":  err,
+		})
+
+		return
+	}
+
+	decodedTk, err := util.DecodeTokenClaims(token)
+
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"sucess": false,
+			"data":   nil,
+			"error":  err,
+		})
+
+		return
+	}
+
+	if decodedTk.ID == "" {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"sucess": false,
 			"data":   nil,
@@ -33,7 +56,7 @@ func GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	parsedId, err := uuid.Parse(param)
+	parsedId, err := uuid.Parse(decodedTk.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
@@ -71,9 +94,31 @@ func GetUsers(ctx *gin.Context) {
 }
 
 func DeleteUsers(ctx *gin.Context) {
-	param := ctx.Param("id")
+	token, err := util.GetToken(ctx)
 
-	if param == "" {
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"sucess": false,
+			"data":   nil,
+			"error":  err,
+		})
+
+		return
+	}
+
+	decodedTk, err := util.DecodeTokenClaims(token)
+
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"sucess": false,
+			"data":   nil,
+			"error":  err,
+		})
+
+		return
+	}
+
+	if decodedTk.ID == "" {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"sucess": false,
 			"data":   nil,
@@ -83,7 +128,7 @@ func DeleteUsers(ctx *gin.Context) {
 		return
 	}
 
-	parsedId, err := uuid.Parse(param)
+	parsedId, err := uuid.Parse(decodedTk.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
