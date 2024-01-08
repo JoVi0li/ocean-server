@@ -127,7 +127,7 @@ func SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusUnauthorized, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"sucess": true,
 		"data":   token,
 		"error":  nil,
