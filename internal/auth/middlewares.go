@@ -2,7 +2,6 @@ package auth
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/JoVi0li/ocean-server/internal/util"
 	"github.com/gin-gonic/gin"
@@ -10,20 +9,18 @@ import (
 
 func AuthMidd() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		authHeader := ctx.GetHeader("Authorization")
+		tokenString, err := util.GetToken(ctx)
 
-		if authHeader == "" {
+		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{
 				"sucess": false,
 				"data":   nil,
-				"error":  ErrorMissingAuthorizationToken,
+				"error":  err,
 			})
 			ctx.Abort()
 
 			return
 		}
-
-		tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
 
 		tokenErr := util.ValidateToken(tokenString)
 
