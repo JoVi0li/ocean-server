@@ -12,7 +12,7 @@ func main() {
 
 	/// Setup user
 	user.Configure()
-	user.SetRoutes(server)
+	user.SetRoutes(server, auth.AuthMidd())
 
 	/// Setup auth
 	auth.Configure()

@@ -1,8 +1,12 @@
 package user
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-func SetRoutes (g *gin.Engine) {
-	g.GET("/users/:id", GetUsers)
-	g.DELETE("/users/:id", DeleteUsers)
+func SetRoutes (g *gin.Engine, authMidd gin.HandlerFunc) {
+	group := g.Group("/user")
+	group.Use(authMidd)
+	group.GET("/", GetUsers)
+	group.DELETE("/", DeleteUsers)
 }
