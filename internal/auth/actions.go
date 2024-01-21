@@ -34,6 +34,18 @@ func SignUp(ctx *gin.Context) {
 		return
 	}
 
+	_, err := service.FindByEmail(ctx, user.Email)
+
+	if err == nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"sucess": false,
+			"data":   nil,
+			"error":  ErrorCredentialsInvalid.Error(),
+		})
+
+		return
+	}
+
 	ctxTimeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
@@ -91,19 +103,17 @@ func SignIn(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorCredentialsInvalid,
+			"error":  ErrorCredentialsInvalid.Error(),
 		})
 
 		return
 	}
 
-	correctPassword := util.CheckPassword(user.Password, infos.Password)
-
-	if !correctPassword {
+	if err := util.CheckPassword(user.Password, infos.Password); err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorCredentialsInvalid,
+			"error":  ErrorCredentialsInvalid.Error(),
 		})
 
 		return
@@ -121,7 +131,7 @@ func SignIn(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  ErrorCredentialsInvalid,
+			"error":  ErrorCredentialsInvalid.Error(),
 		})
 
 		return
