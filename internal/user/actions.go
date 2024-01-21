@@ -40,7 +40,7 @@ func GetUsers(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"sucess": false,
 			"data":   nil,
-			"error":  err,
+			"error":  err.Error(),
 		})
 
 		return
@@ -86,10 +86,13 @@ func GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNotFound, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"sucess": true,
-		"data":   user,
-		"error":  nil,
+		"data": gin.H{
+			"username": user.Username,
+			"email":    user.Email,
+		},
+		"error": nil,
 	})
 }
 

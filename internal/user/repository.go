@@ -22,7 +22,7 @@ type RepositoryPostgres struct {
 func (r *RepositoryPostgres) Insert(ctx context.Context, user User) (User, error) {
 	err := r.Connection.QueryRow(
 		ctx,
-		"INSERT INTO users (username, email, password) ($1, $2, $3) RETURNING id, username, email",
+		"INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email",
 		user.Username,
 		user.Email,
 		user.Password,
@@ -58,9 +58,9 @@ func (r *RepositoryPostgres) FindByEmail(ctx context.Context, email string) (Use
 	var user = User{Email: email}
 	err := r.Connection.QueryRow(
 		ctx,
-		"SELECT username, email, password FROM users WHERE email = $1",
+		"SELECT username, email, password, id FROM users WHERE email = $1",
 		email,
-	).Scan(&user.Username, &user.Email, &user.Password)
+	).Scan(&user.Username, &user.Email, &user.Password, &user.ID)
 
 	if err == pgx.ErrNoRows {
 		return User{}, ErrorUserNotFound
