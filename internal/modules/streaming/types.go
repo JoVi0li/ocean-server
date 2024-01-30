@@ -2,7 +2,7 @@ package streaming
 
 import "github.com/google/uuid"
 
-type VoiceCall struct {
+type Call struct {
 	ID         uuid.UUID `json:"id"`
 	StartedAt  uuid.UUID `json:"startedAt"`
 	FinishedAt uuid.UUID `json:"finishedAt"`
