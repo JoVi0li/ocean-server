@@ -1,4 +1,4 @@
-package util
+package shared
 
 import (
 	"os"
@@ -39,8 +39,8 @@ func NewToken(infos UserInfoToken) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString([]byte(os.Getenv("JWT_SIGNING_KEY")))
 
+	ss, err := token.SignedString([]byte(os.Getenv("JWT_SIGNING_KEY")))
 	if err != nil {
 		return "", err
 	}
@@ -59,7 +59,6 @@ func ValidateToken(token string) error {
 		if expTime, err := tk.Claims.GetExpirationTime(); err != nil || expTime.Time.Compare(time.Now()) == -1 {
 			return ErrorExpiredToken
 		}
-
 		return nil
 	} else {
 		return ErrorUnknownClaimsType
@@ -68,13 +67,11 @@ func ValidateToken(token string) error {
 
 func GetToken(ctx *gin.Context) (string, error) {
 	authHeader := ctx.GetHeader("Authorization")
-
 	if authHeader == "" {
 		return "", ErrorMissingAuthorizationToken
 	}
 
 	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-
 	if tokenString == "" {
 		return "", ErrorInvalidAuthorizationToken
 	}
@@ -86,13 +83,11 @@ func DecodeTokenClaims(token string) (*tokenClaims, error) {
 	tk, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SIGNING_KEY")), nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
 
 	tkClaims, ok := tk.Claims.(*tokenClaims)
-
 	if !ok {
 		return nil, ErrorUnknownClaimsType
 	}

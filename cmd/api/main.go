@@ -5,9 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/JoVi0li/ocean-server/internal/auth"
-	"github.com/JoVi0li/ocean-server/internal/database"
-	"github.com/JoVi0li/ocean-server/internal/user"
+	"github.com/JoVi0li/ocean-server/internal/modules/auth"
+	"github.com/JoVi0li/ocean-server/internal/shared/database"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -26,10 +25,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	/// Setup user
-	user.Configure()
-	user.SetRoutes(server, auth.AuthMidd())
 
 	/// Setup auth
 	auth.Configure()
