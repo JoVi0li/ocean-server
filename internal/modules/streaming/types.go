@@ -1,6 +1,9 @@
 package streaming
 
-import "github.com/google/uuid"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
 
 type Call struct {
 	ID         uuid.UUID `json:"id"`
@@ -13,3 +16,10 @@ type UsersInCall struct {
 	UserID      uuid.UUID `json:"userID"`
 	VoiceCallID uuid.UUID `json:"voiceCallID"`
 }
+
+type Connection struct {
+	VoiceCallID uuid.UUID
+	Clients     Clients
+}
+
+type Clients = map[*gin.Context]chan []byte
