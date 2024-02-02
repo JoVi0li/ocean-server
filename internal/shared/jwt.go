@@ -15,7 +15,7 @@ type UserInfoToken struct {
 	Email    string
 }
 
-type tokenClaims struct {
+type TokenClaims struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
@@ -23,7 +23,7 @@ type tokenClaims struct {
 }
 
 func NewToken(infos UserInfoToken) (string, error) {
-	claims := tokenClaims{
+	claims := TokenClaims{
 		infos.ID,
 		infos.Username,
 		infos.Email,
@@ -49,13 +49,13 @@ func NewToken(infos UserInfoToken) (string, error) {
 }
 
 func ValidateToken(token string) error {
-	tk, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+	tk, err := jwt.ParseWithClaims(token, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SIGNING_KEY")), nil
 	})
 
 	if err != nil || !tk.Valid {
 		return err
-	} else if _, ok := tk.Claims.(*tokenClaims); ok {
+	} else if _, ok := tk.Claims.(*TokenClaims); ok {
 		if expTime, err := tk.Claims.GetExpirationTime(); err != nil || expTime.Time.Compare(time.Now()) == -1 {
 			return ErrorExpiredToken
 		}
@@ -79,15 +79,15 @@ func GetToken(ctx *gin.Context) (string, error) {
 	return tokenString, nil
 }
 
-func DecodeTokenClaims(token string) (*tokenClaims, error) {
-	tk, err := jwt.ParseWithClaims(token, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+func DecodeTokenClaims(token string) (*TokenClaims, error) {
+	tk, err := jwt.ParseWithClaims(token, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SIGNING_KEY")), nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	tkClaims, ok := tk.Claims.(*tokenClaims)
+	tkClaims, ok := tk.Claims.(*TokenClaims)
 	if !ok {
 		return nil, ErrorUnknownClaimsType
 	}
